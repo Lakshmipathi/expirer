@@ -1,0 +1,74 @@
+Introduction
+=============
+expirer is a file expiry tool. It allows admin user to set expiry time for specific files and 
+automagically removes them when it expires.
+
+Dependencies
+=============
+The binary installation of giis-ext4 has only one dependency. This is:
+	libdb
+
+	Using Ubuntu this can be installed by running the command
+		sudo apt-get install libdb
+
+	Using Fedora this can be installed by running the command
+		sudo yum install libdb
+
+The source installation of giis-ext4 also has very few dependencies. These are:
+	pkg-config
+	libdb
+	libdb-dev
+	e2fslibs-dev
+	
+	Using Ubuntu these can be installed by running the command
+		sudo apt-get install libdb libdb-dev e2fslibs-dev pkg-config
+
+	Using Fedora this can be installed by running the command
+		sudo yum install libdb libdb-devel pkgconfig e2fsprogs-devel e2fsprogs-libs
+
+Installation general
+=====================
+Installation of expirer will need root privileges. You should follow these
+steps for both binary and source installation.
+
+Download the tar file into your home directory
+	wget http://www.giis.co.in/giis/expirer.tar
+
+Extract the tar file into your home directory, which will create  a new 
+directory called expirer
+	tar -xvf expirer.tar
+
+Change to the newly created directory
+	cd expirer
+
+
+Installation of binary
+=======================
+These instructions follow on from Installation General. To install expirer
+binary, run the following commands:
+
+Ubuntu
+	sudo sh install_expirer.sh
+
+Fedora
+	su -
+	sh install_expirer.sh
+
+This script will place the binaries in /usr/sbin and create the /etc/expirer/
+working directory structure and files.
+	 
+Installation from source
+=========================
+These instructions follow on from Installation General. To compile and install 
+expirer from the source code, run the following commmands:
+
+	make all
+	mv -v expirer expirerd /usr/sbin/
+
+This will compile expirer and move the newly created binaries into /usr/sbin/
+
+Congrats! you have succuessfully installed expirer from either the binary or source
+code.
+
+
+Running expirer --help will give you more details.

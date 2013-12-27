@@ -1,0 +1,71 @@
+expirer - Given file  automagically expires after 'n' minutes.
+-------------------------------------------------------
+1) Read filename from user (Get filepath) and 'n' minutes to expire.
+2) stat(fname) if getuid()!=0 and stat.uid != getuid() then abort "Only file
+owner can set expiry time"
+3) Check stat.filetype=1 (regular file) and 'n' is +ve,if not abort.
+4) Compute current time in seconds, and add 'n' to get 'expire_time'
+5) Gain root privileges (setuid as 0) (Optional if you set 'chmod root:root expirer' and 'chmod u+s expirer')
+6) Find the partition where  the file resides,If its not ext* FS - abort
+"Unsupported file system" (If user provides this value,we can avoid this step)
+7) Now Open drive/partition as read-write.  
+8) Get inode structure of the file using libext2fs.
+9) Now set 'expire_time' as inode's dtime entry.
+10) Drop root privileges (setuid(pw_uid)).
+11) Open bdb(enable duplicate key support) with lock as write/append-mode.
+12) Insert key (expire_time) and value [1] into the db.
+13) Unlock and Close the db.
+
+------------
+python daemon:
+------------
+------------
+0) Check the db permission. If its not 644 and owned by root - abort.
+1) Lock the db & Open the db with read-only mode.
+2) Check the smallest expire_time from that db.(i.e Minimum value in b-tree)
+   and retrive the record & unlock the db.
+3) Compute current time in seconds.
+4) If smallest expire_time > current_time , then sleep for 60 seconds.
+5) If smallest expire_time <= current_time, then goto step 6. 
+6) a)If stat(filepath) == -1 , "File not found" abort.
+   b)stat(filepath), If stat.inode != db.inode "File inode freed and re-used.  ignore the file."
+   c)stat(filepath), If stat.inode == db.inode && db.uid != stat.uid [File owner changed.Ignore the file.]
+   d)stat(filepath), If stat.inode == db.inode && db.uid = stat.uid && Now compute sha256sum. 
+        d.1) If db.sha256sum != sha256sum then unlink(filepath) [file data blocks are modified]
+        d.2) db.sha256sum = sha256sum then unlink(filepath) [Perfect match!]
+7) Goto step0.
+
+-------------
+Update process:
+-------------
+-------------
+1) Get partition details as user input.
+2) Scan through all inodes in the file system.
+3) If dtime>0 and inode in-use then Fill-in the struct (inode_number,file_path,uid,sha256sum) and insert into the bdb.
+4) close the bdb. 
+
+----------
+[1] bdb entry :
+----------
+----------
+key : expire-time (etime) in seconds.
+Value struct: inode_number,file_path,uid,sha256sum
+
+-----------
+expirer syntax:
+----------
+----------
+
+expirer -d <drive-name> -f <absolute/path/name> -n <minutes>
+
+-d <drive-name> partition detail 
+-f <absolute/path/name> Path of the filename.
+-n <minutes> - remaining minutes before the expires.
+
+-------------
+Example cli:
+-------------
+-------------
+
+To automagically remove a file (/home/laks/file.txt) from a partition (/dev/sda1) in 20 minutes.
+expirer -d /dev/sda1 -f /home/laks/file.txt -n 20

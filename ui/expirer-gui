@@ -1,0 +1,123 @@
+#!/usr/bin/python
+from kivy.app import App
+from kivy.lang import Builder
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.textinput import TextInput
+import os,subprocess,shlex
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
+
+Builder.load_string("""
+<Calc>:
+    # This are attributes of the class Calc now
+    a: _a
+    b: _b
+    c: _c
+    result: _result
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'top'
+        ScreenManager:
+            size_hint: 1, .9
+            id: _screen_manager
+            Screen:
+                name: 'screen1'
+                GridLayout:
+                    cols:1
+                    TextInput:
+                        id: _a
+                        text: 'Enter device name here!'
+                    TextInput:
+                        id: _b
+                        text: 'Absolute file path here!'
+                    TextInput:
+                        id: _c
+                        text: 'Minutes to expire!'
+                    Label:
+                        id: _result
+                    Button:
+                        text: 'Submit'
+                        # You can do the opertion directly
+                        on_press: root.do_some(_a.text,_b.text,_c.text)
+                        on_release: _result.text = "Status : File " + _b.text +" Will get expired in " +_c.text +" minutes"
+                    Button:
+                        text: 'Clear'
+                        # Or you can call a method from the root class (instance of calc)
+                        on_press: root.do_clear()
+                        on_release: _result.text = "Status : Ready to accept new inputs"
+            Screen:
+                name: 'screen2'
+                GridLayout:
+                    cols:1
+                    TextInput:
+                        id: _x
+                    Button:
+                        text: 'Get expire details'
+                        # You can do the opertion directly
+                        on_press: _x.text = "HEllo"
+                        on_release: _x.text = root.do_list()
+            Screen:
+                name: 'screen3'
+                GridLayout:
+                    cols:1
+                    Button:
+                        text: 'Python-Kivy based expirer UI by Lakshmipathi.G <lakshmipathi.g@giis.co.in>'
+
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'bottom'
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, .1
+            Button:
+                text: 'Expirer'
+                on_press: _screen_manager.current = 'screen1'
+            Button:
+                text: 'Details'
+                on_press: _screen_manager.current = 'screen2'
+            Button:
+                text: 'About'
+                on_press: _screen_manager.current = 'screen3'""")
+
+class Calc(FloatLayout):
+    def do_some(self,device,filepath,timevalue):
+	try:
+		cmd = "/usr/sbin/expirer -d "+device+" -f "+filepath+" -t "+timevalue
+		print "running"+cmd
+		subprocess.check_output(shlex.split(cmd))
+	except subprocess.CalledProcessError as e:
+		popup = Popup(title='Error Box', content=Label(text='oops!Something went wrong!'),size_hint=(None, None), size=(400, 400))
+		popup.open()
+
+	print device,filepath,timevalue
+    def do_clear(self):
+        self.a.text = "Enter device name here!"
+        self.b.text = "Enter absolute filepath here!"
+        self.c.text = "Minutes to expire!"
+	self.result.text = " "
+        self.a.focus = True
+
+    def do_list(self):
+	print "inside do_list"
+	cmd = "/usr/sbin/expirer -l"
+	print "running"+cmd
+	p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
+	result = p.communicate()[0]
+	print result
+	return str(result)
+
+    def on_focus(instance, value):
+        if value:
+           print('User focused', instance)
+        else:
+           print('User defocused', instance)
+
+	textinput = TextInput()
+        textinput.bind(focus=on_focus)
+
+class expirerApp(App):
+    def build(self):
+        return Calc()
+
+if __name__ == '__main__':
+    expirerApp().run()
