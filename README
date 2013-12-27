@@ -23,7 +23,7 @@ How expirer works?
 -----------------
 
 When user sets file name and its time using 'expirer',time value recorded in file inode's dtime field.
-Then the values filename,time,md5sum stored on  Berkeley DB (/etc/expirer/expirer.db) with time as key.
+Then the values filename,time,md5sum stored on  Berkeley DB (/etc/expirer/info.db) with time as key.
 And restart the daemon process 'expirerd'.
 
 expirerd is a daemon process which keeps reading DB file and when it finds entry which matches current
