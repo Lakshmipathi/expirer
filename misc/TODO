@@ -1,9 +1,12 @@
 expirer TODO list
 -----------------
 - Use other field instead of inode's  i_dtime ?
+- expirerd process needs to use sigaction and recheck sleep time values.
+- Before inserting a entry, if its already exists, update the old one.
 - expirer on symlink sets dtime on target file not symlink itself - fix needed ?
 - Accept input for specific set of file types. (ex: expire all *.txt for uid=500)
-- Improve rescan option (-s) without -m option
+- Improve rescan option (-s) without -m option.
 - Replace expirerd daemon with python code.
-- Handle UI errors from python-kivy
+- Handle UI errors from python-kivy.
+- Add Cancel and rescan option from expirer-gui.
 
