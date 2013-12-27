@@ -105,7 +105,7 @@ void expirer_set_dtime(struct ext2_inode *, int);
 void expirer_computer_md5sum(char *);
 int expirer_list_files(int,char *);
 void expirer_file_inode_list_push(struct node**,unsigned long,unsigned long ,unsigned long );
-char* get_abs_path(char *);
+char* expirer_get_abs_path(char *);
 void expirer_add_list_to_bdb(struct node*);
 void expirer_compute_md5sum(char *);
 
@@ -274,7 +274,7 @@ void expirer_add_list_to_bdb(struct node* current){
 
 		user.inode_number = current->file_inode;
 		user.expiry_time = current->expiry_time;
-		user.file_path = get_abs_path(current->pathname);
+		user.file_path = expirer_get_abs_path(current->pathname);
 		stat(user.file_path, &filestat);
 		user.owner = filestat.st_uid;
 		expirer_compute_md5sum(user.file_path);
@@ -313,13 +313,13 @@ struct private_data{
 };
 
 char abs_path[75];
-char* get_abs_path(char *path){
+char* expirer_get_abs_path(char *path){
 	extern char mounteddir[75],abs_path[75];
 	memset(abs_path,0,75);
 	strcpy(abs_path,mounteddir);
 	return strcat(abs_path,path);
 }
-int check_entries(struct ext2_dir_entry *dirent,
+int expirer_check_entries(struct ext2_dir_entry *dirent,
 			int offset EXT2FS_ATTR((unused)),
 			int blocksize EXT2FS_ATTR((unused)),
 			char *buf EXT2FS_ATTR((unused)), void *private)
@@ -379,7 +379,7 @@ int expirer_search_inodetype(ext2_filsys current_fs,int inodetype){
 			pino->parent_inode=ino;
 			pino->current_fs=current_fs;
 			retval = ext2fs_dir_iterate(current_fs, ino, 0, 0,
-					check_entries, pino);
+					expirer_check_entries, pino);
 		}
 
 next:
@@ -395,7 +395,7 @@ next:
 
 
 //print the list
-void printlist(struct node* current){
+void expirer_printlist(struct node* current){
 	while(current!=NULL){
 		printf("\n file :%u",current->file_inode);
 		printf("\n parent:%u",current->parent_inode);
@@ -419,7 +419,7 @@ void expirer_file_inode_list_push(struct node** headref,unsigned long file_inode
 
 	*headref=newnode;
 #if 0
-	printlist(*headref);
+	expirer_printlist(*headref);
 #endif
 
 }
@@ -543,13 +543,6 @@ time_t expirer_current_time(){
 	return tv.tv_sec;
 }
 
-int expirer_scan(){
-
-	ext2_inode_scan		scan = 0;
-	ext2_ino_t		ino;
-	struct ext2_inode	inode;
-	errcode_t		retval;
-}
 
 int btreecompare(DB *db,const DBT *d1,const DBT *d2){
 	unsigned long int d1_key = *(unsigned long int *)d1->data;
