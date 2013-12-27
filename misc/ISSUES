@@ -1,0 +1,8 @@
+Known Issues
+============
+- fsck will report error and ask you to fix dtime for these expiring files.
+  expirer sets inode structures dtime - while the inode is in-use.
+
+- If file.txt initially set to be expired at 10.03am then user changed his/her mind
+  trying to adjust the file to be expired at 11.44am - May still expire at 10.03am
+  -> Need time to think about this. What to do? Lets add this on Version 0.2 :p
