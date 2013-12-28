@@ -220,7 +220,7 @@ int main(int argc,char *argv[]){
 		handle_error("Only owner can set expiry time\n");
 	}
 
-	if ((!S_ISREG(filestat.st_mode))&& arguments.flag!=1)
+	if ( arguments.flag!=1 && (!S_ISREG(filestat.st_mode)))
 		handle_error("Only regular file type supported.\n");
 
 
@@ -387,7 +387,7 @@ next:
 			retval = ext2fs_get_next_inode(scan, &ino, &inode);
 		} while (retval == EXT2_ET_BAD_BLOCK_IN_INODE_TABLE);
 	}
-
+	free(pino);
 	if (scan)
 		ext2fs_close_inode_scan(scan); 
 }
@@ -507,6 +507,11 @@ int expirer_list_files(int flag,char *filename){
 		}
 
 	}
+	if (cursorp != NULL)
+	    cursorp->close(cursorp); 
+
+	if (my_database != NULL)
+	    my_database->close(my_database, 0);
 
 	return 0;
 
@@ -583,6 +588,8 @@ int expirer_bdb_insert(EXPIRER_DATA *user){
 
 	ret = my_database->open(my_database,NULL,DB_PATH,NULL,DB_BTREE,flags,0);
 	if (ret != 0) {
+		if (my_database != NULL)
+			my_database->close(my_database, 0);
 		handle_error("Open db failed");
 	}
 
@@ -622,11 +629,15 @@ int expirer_bdb_insert(EXPIRER_DATA *user){
 	data.size = bufflen;
 
 	ret = my_database->put(my_database, NULL, &key, &data, 0);
-	if (ret != 0 )
+	if (ret != 0 ){
+		if (my_database != NULL)
+			my_database->close(my_database, 0);
 		handle_error("insert record failed");
+	}
 
 	/* When we're done with the database, close it. */
 	if (my_database != NULL)
 		my_database->close(my_database, 0);
 	free(databuff);
+
 }

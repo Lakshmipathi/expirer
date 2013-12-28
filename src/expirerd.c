@@ -43,9 +43,9 @@ void restart_process(char **args){
 }
 
 char md5sum[34];
-volatile sig_atomic_t signal_recieved = 0;
+volatile sig_atomic_t signal_received = 0;
 void sighandler (int signum) {
-	signal_recieved = 1;
+	signal_received = 1;
 }
 
 
@@ -122,9 +122,8 @@ int main(int argc,char* argv[]){
 		perror ("signal failed");
 	}
 forever_loop:
-	if (signal_recieved) {
-		signal_recieved = 0;
-		restart_process (argv);
+	if (signal_received) {
+		goto close_db;
 	}
 	// get pid and log it
 	fd = fopen("/var/run/expirerd.pid","w");
@@ -166,7 +165,7 @@ forever_loop:
 
 	if (ret < 0) {
 		printf("\n Empty Db");
-		sleep(10);
+		sleep(120);//ideally sleep until USR1 received!
 	}else{
 		key_buf = key.data;
 		buffer = data.data;
@@ -183,10 +182,8 @@ forever_loop:
 		while (user.expiry_time > cur_time){
 			sleep(10);
 			cur_time = expirer_current_time();
-			if (signal_recieved) {
-				signal_recieved = 0;
-				restart_process (argv);
-			}
+			if (signal_received) 
+				goto close_db;
 		}
 
 		//validate current disk file entries match db stat
@@ -200,12 +197,16 @@ forever_loop:
 
 	}
 	/* Cursors must be closed */
-
+close_db:
 	if (cursorp != NULL)
 		cursorp->close(cursorp); 
 
 	if (my_database != NULL)
 		my_database->close(my_database, 0);
+	if(signal_received){
+		signal_received = 0;
+		restart_process (argv);
+	}
 
 	goto forever_loop;
 }
