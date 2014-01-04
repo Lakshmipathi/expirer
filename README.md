@@ -1,0 +1,136 @@
+					README 
+					------
+			
+					expirer
+					=======
+					version.0.1
+	
+*About expirer
+*How to install
+*User Guide and Documents
+
+
+About expirer:
+==============
+expirer is a file expiry tool. It allows admin user to set expiry time for specific files and 
+automagically removes them when it expires.
+
+How to install:
+============== 
+see INSTALL file
+
+ISSUES:
+=======
+***Warning** : This is a beta-release,Use at your own risk!  
+Read misc/ISSUES file for couple of known issues.
+
+How expirer works?
+-----------------
+
+When user sets file name and its time using 'expirer',time value recorded in file inode's dtime field.
+Then the values filename,time,md5sum stored on  Berkeley DB (/etc/expirer/info.db) with time as key.
+And restart the daemon process 'expirerd'.
+
+expirerd is a daemon process which keeps reading DB file and when it finds entry which matches current
+time, it compares the disk file owner,inode,md5sum with DB values. If there is a perfect match daemon
+process unlinks the filepath and fetches the next DB record and repeats the process.
+
+Why not use a simple scrit with cron ? 
+---------------------------------------
+
+Yes. You can achieve same effect with a simple bash/python scripts. One possible advantage(?) over 
+such script is:
+
+-    With bash/python scripts you need to store the file details at certain db. If there are 50 people 
+     and each of them sets 1 file location and time to the db. Now db goes corrupt or missing. You need 
+     to re-enter the value manually 50 times. With 'expirer' you can perform a simple rescan to re-create 
+     the db entires,no need to manually set the file expiry time again!
+
+Why you need such tool ?
+-----------------------
+
+- We have project where we(root) share files with users in a common directory. Just needed to ensure,that
+  these files are deleted from common share once the user copies them to their home directories.
+
+Why inode's dtime is used instead of acl?
+----------------------------------------
+
+acl can be used, If I'm not wrong sometimes(or always?) setting 'acl' entries consume 1 block. 
+using dtime this can be prevented.
+
+If you find some other field (may be i_ctime_extra ? ) which will be more useful or right place
+holder than dtime. Please let me know. Thanks in advance!
+
+Do you have an expirer GUI?
+---------------------------
+
+Glad you asked for it :D Yes!!!. We do have one based on Python-Kivy. Simply run 'expirer-gui' to use it.
+
+How to use the tool
+===================
+ 	
+How to set expiry time for files?
+---------------------------------
+
+You need to pass devicename,absolute filepath and minutes as arguments to expirer binary.
+
+Usage: expirer   [-l list] [-d devicename -f filepath -t minutes] [-s -d devicename -m mountpoint] [-c cancel -f filepath]
+
+<code>
+# expirer -d /dev/sda7 -f /home/laks/file.exp6 -t 10
+
+ File /home/laks/file.exp6 will expire in 10 minutes : Sat Dec 21 12:38:17 2013
+</code>
+
+For example, above command ensure the file "/home/laks/file.exp6" expires in 10 minutes
+which happens to be "Sat Dec 21 12:38:17 2013".
+
+How to view list of expiry files and it details?
+-----------------------------------------------
+<code>
+# expirer -l
+
+	Filename	      Expires on
+
+	--------	      ----------
+
+	/home/laks/file.exp6	Sat Dec 21 12:38:17 2013	
+
+	/home/laks/file.exp10	Sat Dec 21 19:15:39 2013
+</code>
+How to Cancel an entry from the expiry job list?
+------------------------------------------------
+Suppose, your mind changed, now you won't want the file (file.exp10) to get expired. In order to cancel the previously
+applied expiry settings run the following command:
+<code>
+# expirer -c -f /home/laks/file.exp10
+</code>
+How to scan a device for expiry files ?
+--------------------------------------
+
+If you want to recreate the database use -s option rescan the partition.
+<code>
+# expirer -s -d devicename -m mounteddir
+</code>
+
+example:
+<code>
+#expirer -s -d /dev/sda7 -m /home
+</code>
+
+Will scan the drive /dev/sda7 which was mounted on /home directory.
+
+Note: Run this command only when /etc/expirer/info.db is corrupt or accidentally 
+removed.
+
+
+User Guide and Documents
+========================
+For more screencasting/manuals,checkout  www.giis.co.in
+
+You can get me at  <lakshmipathi.g@giis.co.in>
+
+-Lakshmipathi.G
+www.giis.co.in
+-Dec 27,2013.
+==================================EOF==================================
