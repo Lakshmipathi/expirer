@@ -1,9 +1,9 @@
-					README 
-					------
+	    README 
+   	    ======
 			
-					expirer
-					=======
-					version.0.1
+	    expirer
+	    -------
+	    version.0.1
 	
 *About expirer
 
@@ -23,7 +23,7 @@ see INSTALL file
 
 ISSUES:
 =======
-***Warning** : This is a beta-release,Use at your own risk!  
+__Warning__ : This is a beta-release,Use at your own risk!  
 Read misc/ISSUES file for couple of known issues.
 
 How expirer works?
@@ -66,7 +66,7 @@ holder than dtime. Please let me know. Thanks in advance!
 Do you have an expirer GUI?
 ---------------------------
 
-Glad you asked for it :D Yes!!!. We do have one based on Python-Kivy. Simply run 'expirer-gui' to use it.
+Glad you asked for it :D Yes!!!. We do have one based on Python-Kivy. Simply run **expirer-gui** to use it.
 
 How to use the tool
 ===================
@@ -79,8 +79,7 @@ You need to pass devicename,absolute filepath and minutes as arguments to expire
 Usage: expirer   [-l list] [-d devicename -f filepath -t minutes] [-s -d devicename -m mountpoint] [-c cancel -f filepath]
 
 <code>
-	# expirer -d /dev/sda7 -f /home/laks/file.exp6 -t 10
-
+	\# expirer -d /dev/sda7 -f /home/laks/file.exp6 -t 10
 	 File /home/laks/file.exp6 will expire in 10 minutes : Sat Dec 21 12:38:17 2013
 </code>
 
@@ -90,7 +89,7 @@ which happens to be "Sat Dec 21 12:38:17 2013".
 How to view list of expiry files and it details?
 -----------------------------------------------
 <code>
-# expirer -l
+	\# expirer -l
 
 	Filename	      Expires on
 
@@ -106,7 +105,8 @@ Suppose, your mind changed, now you won't want the file (file.exp10) to get expi
 applied expiry settings run the following command:
 
 <code>
-# expirer -c -f /home/laks/file.exp10
+
+	\# expirer -c -f /home/laks/file.exp10
 </code>
 
 How to scan a device for expiry files ?
