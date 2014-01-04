@@ -79,9 +79,9 @@ You need to pass devicename,absolute filepath and minutes as arguments to expire
 Usage: expirer   [-l list] [-d devicename -f filepath -t minutes] [-s -d devicename -m mountpoint] [-c cancel -f filepath]
 
 <code>
-# expirer -d /dev/sda7 -f /home/laks/file.exp6 -t 10
+	# expirer -d /dev/sda7 -f /home/laks/file.exp6 -t 10
 
- File /home/laks/file.exp6 will expire in 10 minutes : Sat Dec 21 12:38:17 2013
+	 File /home/laks/file.exp6 will expire in 10 minutes : Sat Dec 21 12:38:17 2013
 </code>
 
 For example, above command ensure the file "/home/laks/file.exp6" expires in 10 minutes
@@ -104,20 +104,24 @@ How to Cancel an entry from the expiry job list?
 ------------------------------------------------
 Suppose, your mind changed, now you won't want the file (file.exp10) to get expired. In order to cancel the previously
 applied expiry settings run the following command:
+
 <code>
 # expirer -c -f /home/laks/file.exp10
 </code>
+
 How to scan a device for expiry files ?
 --------------------------------------
 
 If you want to recreate the database use -s option rescan the partition.
+
 <code>
-# expirer -s -d devicename -m mounteddir
+	# expirer -s -d devicename -m mounteddir
 </code>
 
 example:
+
 <code>
-#expirer -s -d /dev/sda7 -m /home
+	#expirer -s -d /dev/sda7 -m /home
 </code>
 
 Will scan the drive /dev/sda7 which was mounted on /home directory.
