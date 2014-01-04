@@ -6,13 +6,15 @@ expirer
 version.0.1
 	
    -About expirer
+
    -How to install
+
    -User Guide and Documents
 
 
 About expirer:
 ==============
-expirer is a file expiry tool. It allows admin user to set expiry time for specific files and 
+`expirer` is a file expiry tool. It allows admin user to set expiry time for specific files and 
 automagically removes them when it expires.
 
 How to install:
@@ -30,7 +32,7 @@ When user sets file name and its time using `expirer`,time value recorded in fil
 Then the values filename,time,md5sum stored on  Berkeley DB (/etc/expirer/info.db) with time as key.
 And restart the daemon process `expirerd`.
 
-expirerd is a daemon process which keeps reading DB file and when it finds entry which matches current
+`expirerd` is a daemon process which keeps reading DB file and when it finds entry which matches current
 time, it compares the disk file owner,inode,md5sum with DB values. If there is a perfect match daemon
 process unlinks the filepath and fetches the next DB record and repeats the process.
 
@@ -63,7 +65,7 @@ holder than dtime. Please let me know. Thanks in advance!
 Do you have an expirer GUI?
 ---------------------------
 
-Glad you asked for it :D Yes!!!. We do have one based on Python-Kivy. Simply run **expirer-gui** to use it.
+Glad you asked for it :D Yes!!!. We do have one based on Python-Kivy. Simply run `expirer-gui` to use it.
 
 How to use the tool
 ===================
@@ -73,7 +75,7 @@ How to set expiry time for files?
 
 You need to pass devicename,absolute filepath and minutes as arguments to expirer binary.
 
-Usage: expirer   [-l list] [-d devicename -f filepath -t minutes] [-s -d devicename -m mountpoint] [-c cancel -f filepath]
+`Usage: expirer   [-l list] [-d devicename -f filepath -t minutes] [-s -d devicename -m mountpoint] [-c cancel -f filepath]`
 
 <code>
 	\# expirer -d /dev/sda7 -f /home/laks/file.exp6 -t 10
