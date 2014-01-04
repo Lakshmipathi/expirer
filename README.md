@@ -1,15 +1,13 @@
-	    README 
-   	    ======
+README 
+======
 			
-	    expirer
-	    -------
-	    version.0.1
+expirer
+-------
+version.0.1
 	
-*About expirer
-
-*How to install
-
-*User Guide and Documents
+   -About expirer
+   -How to install
+   -User Guide and Documents
 
 
 About expirer:
@@ -19,19 +17,18 @@ automagically removes them when it expires.
 
 How to install:
 ============== 
-see INSTALL file
+see __INSTALL__ file
 
 ISSUES:
 =======
-__Warning__ : This is a beta-release,Use at your own risk!  
-Read misc/ISSUES file for couple of known issues.
+__Warning__ : This is a beta-release,Use at your own risk!   Read __misc/ISSUES__ file for couple of known issues.
 
 How expirer works?
 -----------------
 
-When user sets file name and its time using 'expirer',time value recorded in file inode's dtime field.
+When user sets file name and its time using `expirer`,time value recorded in file inode's dtime field.
 Then the values filename,time,md5sum stored on  Berkeley DB (/etc/expirer/info.db) with time as key.
-And restart the daemon process 'expirerd'.
+And restart the daemon process `expirerd`.
 
 expirerd is a daemon process which keeps reading DB file and when it finds entry which matches current
 time, it compares the disk file owner,inode,md5sum with DB values. If there is a perfect match daemon
