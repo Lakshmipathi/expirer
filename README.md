@@ -83,13 +83,14 @@ You need to pass devicename,absolute filepath and minutes as arguments to expire
 	 File /home/laks/file.exp6 will expire in 10 minutes : Sat Dec 21 12:38:17 2013
 </code>
 
-For example, above command ensure the file "/home/laks/file.exp6" expires in 10 minutes
-which happens to be "Sat Dec 21 12:38:17 2013".
+For example, above command ensure the file */home/laks/file.exp6* expires in 10 minutes
+which happens to be *Sat Dec 21 12:38:17 2013*.
 
 How to view list of expiry files and it details?
 -----------------------------------------------
 <code>
 	\# expirer -l
+
 	Filename	      Expires on
 
 	--------	      ----------
