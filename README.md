@@ -80,6 +80,7 @@ Usage: expirer   [-l list] [-d devicename -f filepath -t minutes] [-s -d devicen
 
 <code>
 	\# expirer -d /dev/sda7 -f /home/laks/file.exp6 -t 10
+
 	 File /home/laks/file.exp6 will expire in 10 minutes : Sat Dec 21 12:38:17 2013
 </code>
 
@@ -90,7 +91,6 @@ How to view list of expiry files and it details?
 -----------------------------------------------
 <code>
 	\# expirer -l
-
 	Filename	      Expires on
 
 	--------	      ----------
@@ -105,7 +105,6 @@ Suppose, your mind changed, now you won't want the file (file.exp10) to get expi
 applied expiry settings run the following command:
 
 <code>
-
 	\# expirer -c -f /home/laks/file.exp10
 </code>
 
